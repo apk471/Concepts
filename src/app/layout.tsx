@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
+import { CommandMenu } from "@/components/command-menu";
+import { getSearchIndex } from "@/lib/notes";
 import "./globals.css";
 
 const inter = Inter({
@@ -75,7 +77,10 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className="font-sans">{children}</body>
+      <body className="font-sans">
+        {children}
+        <CommandMenu entries={getSearchIndex()} />
+      </body>
     </html>
   );
 }
