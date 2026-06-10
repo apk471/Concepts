@@ -113,7 +113,18 @@ export function getAllNotes(): Note[] {
     const rel = path.relative(CONTENT_DIR, file);
     const segments = rel.replace(/\.md$/i, "").split(path.sep);
     const raw = fs.readFileSync(file, "utf8");
-    const { data, content } = matter(raw);
+    // Some notes open with a `---` horizontal rule that isn't valid YAML
+    // frontmatter — fall back to treating the whole file as body.
+    let data: Record<string, unknown> = {};
+    let content = raw;
+    try {
+      const parsed = matter(raw);
+      data = parsed.data;
+      content = parsed.content;
+    } catch {
+      data = {};
+      content = raw;
+    }
     const category = segments[0];
     // nested dir between category and filename becomes the group label
     const group = segments.length > 2 ? humanize(segments[segments.length - 2]) : undefined;
