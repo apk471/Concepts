@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import type { Note } from "@/lib/notes";
+import { resolveIcon } from "@/lib/note-visual";
 import { CategoryIcon } from "./category-icon";
 import { CardIllustration } from "./card-illustration";
 
 export function NoteCard({ note, index }: { note: Note; index: number }) {
+  const icon = resolveIcon(note.slug, note.title, note.category);
   return (
     <Link href={`/${note.slug}`}>
       <motion.div
@@ -17,7 +19,7 @@ export function NoteCard({ note, index }: { note: Note; index: number }) {
       >
         {/* Illustration */}
         <div className="flex w-full items-center justify-center border-b border-neutral-100 bg-neutral-50 px-6 pb-4 pt-6 dark:border-neutral-800 dark:bg-neutral-950/40">
-          <CardIllustration category={note.category} />
+          <CardIllustration name={icon} />
         </div>
 
         <div className="flex flex-1 flex-col justify-between p-6">
@@ -31,7 +33,7 @@ export function NoteCard({ note, index }: { note: Note; index: number }) {
           {/* Icon + title */}
           <div className="mt-4 flex items-center gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-neutral-50 text-neutral-700 transition-colors duration-300 group-hover:bg-neutral-900 group-hover:text-white dark:bg-neutral-800 dark:text-neutral-300 dark:group-hover:bg-white dark:group-hover:text-neutral-900">
-              <CategoryIcon category={note.category} />
+              <CategoryIcon name={icon} />
             </div>
             <h3 className="text-lg font-semibold leading-tight tracking-tight text-neutral-900 dark:text-neutral-100">
               {note.title}
