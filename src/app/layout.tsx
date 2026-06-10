@@ -14,7 +14,7 @@ const jetbrains = JetBrains_Mono({
   variable: "--font-jetbrains",
 });
 
-const siteUrl = "https://concepts-notes.vercel.app";
+const siteUrl = "https://concept-pi.vercel.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

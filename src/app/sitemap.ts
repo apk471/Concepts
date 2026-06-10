@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getAllNotes } from "@/lib/notes";
 
-const base = "https://concepts-notes.vercel.app";
+const base = "https://concept-pi.vercel.app";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const notes = getAllNotes().map((n) => ({
