@@ -137,3 +137,31 @@ body {
 .hljs-strong {
   font-weight: 700;
 }
+
+/* ── Prose (markdown bodies) ── */
+.prose pre {
+  background: var(--code-bg);
+  color: var(--hl-fg);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+}
+.prose :not(pre) > code {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 0.375rem;
+  padding: 0.1rem 0.35rem;
+  font-size: 0.85em;
+  font-weight: 500;
+}
+/* typography adds backtick pseudo-elements on inline code — drop them */
+.prose :not(pre) > code::before,
+.prose :not(pre) > code::after {
+  content: "";
+}
+.prose a {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+.prose table {
+  font-size: 0.875em;
+}
