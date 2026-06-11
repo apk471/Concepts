@@ -52,11 +52,11 @@ export const metadata: Metadata = {
 };
 
 // Set the theme class before first paint to avoid a flash.
+// Default to light ("White Mode"); only go dark when the user has explicitly chosen it.
 const themeScript = `
 (function () {
   try {
-    var t = localStorage.getItem('theme');
-    if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    if (localStorage.getItem('theme') === 'dark') {
       document.documentElement.classList.add('dark');
     }
   } catch (e) {}
