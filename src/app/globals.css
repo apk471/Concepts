@@ -165,3 +165,47 @@ body {
 .prose table {
   font-size: 0.875em;
 }
+
+/* ── Mermaid diagrams ── */
+/* The SVG is injected into a plain <div>, but it lives inside a <p> that the
+   typography plugin styles; neutralize the box so the diagram sits cleanly. */
+.prose .mermaid-diagram {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+.prose .mermaid-diagram svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ── Expand/collapse (<details>/<summary>) ── */
+.prose details {
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 0.5rem 1rem;
+  margin: 1.25rem 0;
+  background: var(--code-bg);
+}
+.prose details[open] {
+  padding-bottom: 1rem;
+}
+.prose summary {
+  cursor: pointer;
+  font-weight: 600;
+  list-style: none;
+  padding: 0.25rem 0;
+}
+.prose summary::-webkit-details-marker {
+  display: none;
+}
+.prose summary::before {
+  content: "▸";
+  display: inline-block;
+  margin-right: 0.5rem;
+  transition: transform 0.15s ease;
+  color: var(--hl-comment);
+}
+.prose details[open] > summary::before {
+  transform: rotate(90deg);
+}

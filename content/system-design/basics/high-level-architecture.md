@@ -10,9 +10,11 @@ A high-level architecture (HLD) describes the major components of a system and h
 
 ## The Basic Flow
 
-```text
-User -> DNS -> CDN (static) -> LB -> App Servers -> Cache -> DB
-                                                      -> Queue -> Workers
+```mermaid
+flowchart LR
+  User --> DNS --> CDN["CDN (static)"] --> LB --> App["App Servers"]
+  App --> Cache --> DB
+  App --> Queue --> Workers
 ```
 
 1. User types URL or clicks link.
@@ -33,10 +35,11 @@ User -> DNS -> CDN (static) -> LB -> App Servers -> Cache -> DB
 
 DNS translates human-readable domain names (e.g., `api.example.com`) to IP addresses.
 
-```text
-User -> asks DNS: "where is api.example.com?"
-     <- DNS: "it's at 192.0.2.1"
-     -> sends request to 192.0.2.1
+```mermaid
+sequenceDiagram
+  User->>DNS: where is api.example.com?
+  DNS-->>User: it's at 192.0.2.1
+  User->>Server: sends request to 192.0.2.1
 ```
 
 Key points:
@@ -111,6 +114,18 @@ Key points:
 - Deployed behind a load balancer.
 - Multiple instances for redundancy and capacity.
 - Can be VMs, containers, or serverless functions.
+
+<details>
+<summary>Why stateless matters for autoscaling</summary>
+
+If an app server keeps request state in local memory (e.g. session data), any
+request that lands on a different instance loses that state. Keeping servers
+stateless — pushing state to a cache or DB — lets the load balancer route any
+request to any instance, which is what makes horizontal autoscaling work. See
+[Stateless vs Stateful](/system-design/basics/stateless-stateful) for the full
+trade-off.
+
+</details>
 
 ### Database (DB)
 
@@ -262,3 +277,23 @@ User -> DNS (geo)
 | Database | Persistent storage | SQL vs NoSQL, read replicas, sharding |
 | Cache | Fast temporary storage | Eviction policy, invalidation |
 | Message Queue | Async decoupling | Durability, throughput, ordering |
+
+---
+
+## Concept Map
+
+Click a node to jump to the related note.
+
+```mermaid
+flowchart TD
+  HLA["High-Level Architecture"] --> MQ["Message Queues"]
+  HLA --> PS["Pub/Sub"]
+  HLA --> SS["Stateless vs Stateful"]
+  MQ --> WK["Workers"]
+  PS --> WK
+
+  click MQ "/system-design/basics/message-queues"
+  click PS "/system-design/basics/pub-sub"
+  click SS "/system-design/basics/stateless-stateful"
+  click WK "/system-design/basics/workers"
+```
