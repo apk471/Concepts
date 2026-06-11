@@ -71,10 +71,11 @@ Apache Kafka is a distributed event streaming platform. It is not a traditional 
 
 ### How Kafka Works
 
-```text
-Producer -> Topic (Partition 0, Partition 1, Partition 2)
-            -> Consumer Group A (Consumer A1, Consumer A2)
-            -> Consumer Group B (Consumer B1)
+```mermaid
+flowchart LR
+  P[Producer] --> T["Topic<br/>(Partition 0, 1, 2)"]
+  T --> GA["Consumer Group A<br/>(Consumer A1, A2)"]
+  T --> GB["Consumer Group B<br/>(Consumer B1)"]
 ```
 
 - Each partition is an ordered, immutable log.
@@ -146,10 +147,11 @@ RabbitMQ is a message broker that implements AMQP (Advanced Message Queuing Prot
 
 ### How RabbitMQ Works
 
-```text
-Producer -> Exchange
-            -> (bindings) -> Queue 1 -> Consumer A
-                          -> Queue 2 -> Consumer B
+```mermaid
+flowchart LR
+  P[Producer] --> E[Exchange]
+  E -->|bindings| Q1[Queue 1] --> CA[Consumer A]
+  E -->|bindings| Q2[Queue 2] --> CB[Consumer B]
 ```
 
 1. Producer sends a message to an exchange with a routing key.
@@ -232,31 +234,36 @@ Producer -> Exchange
 
 Multiple consumers read from the same queue. Each message goes to one consumer. This distributes work.
 
-```text
-Producer -> [Queue] -> Consumer 1
-                     -> Consumer 2
-                     -> Consumer 3
+```mermaid
+flowchart LR
+  P[Producer] --> Q[Queue]
+  Q --> C1[Consumer 1]
+  Q --> C2[Consumer 2]
+  Q --> C3[Consumer 3]
 ```
 
 ### Pub/Sub (Fan-out)
 
 One message goes to all subscribers. Each consumer group (in Kafka) or each bound queue (in RabbitMQ) gets every message.
 
-```text
-Producer -> [Topic/Exchange] -> Queue A -> Group A
-                              -> Queue B -> Group B
-                              -> Queue C -> Group C
+```mermaid
+flowchart LR
+  P[Producer] --> T["Topic / Exchange"]
+  T --> QA[Queue A] --> GA[Group A]
+  T --> QB[Queue B] --> GB[Group B]
+  T --> QC[Queue C] --> GC[Group C]
 ```
 
 ### Routing
 
 Messages are routed to specific queues based on routing keys or patterns.
 
-```text
-Producer -> Exchange (topic)
-            -> "order.created" -> Order Service Queue
-            -> "payment.*"     -> Payment Service Queue
-            -> "*.failed"      -> Alert Queue
+```mermaid
+flowchart LR
+  P[Producer] --> E["Exchange (topic)"]
+  E -->|"order.created"| OS[Order Service Queue]
+  E -->|"payment.*"| PS[Payment Service Queue]
+  E -->|"*.failed"| AL[Alert Queue]
 ```
 
 ---

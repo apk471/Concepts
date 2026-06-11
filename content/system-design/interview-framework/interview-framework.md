@@ -92,9 +92,11 @@ Sketch the high-level architecture on a whiteboard / diagram. Name the main comp
 
 ### High-Level Building Blocks
 
-```text
-Client -> DNS -> CDN -> LB -> App Servers -> Cache -> DB
-                                             -> Queue -> Workers
+```mermaid
+flowchart LR
+  Client --> DNS --> CDN --> LB --> App["App Servers"]
+  App --> Cache --> DB
+  App --> Queue --> Workers
 ```
 
 ### Components to Call Out
