@@ -27,6 +27,9 @@ export function HomeContent({
           <h1 className="text-4xl font-bold tracking-tight text-neutral-900 sm:text-5xl dark:text-neutral-50">
             Concepts
           </h1>
+          <p className="mt-2 text-sm font-medium uppercase tracking-widest text-neutral-400 dark:text-neutral-500">
+            by Ayush
+          </p>
           <p className="mt-4 max-w-xl text-base leading-relaxed text-neutral-500 dark:text-neutral-400">
             My engineering brain dump. Notes, project ideas, lessons learned,
             interview prep, and things I don&apos;t want to relearn twice.
