@@ -28,8 +28,11 @@ export function HomeContent({
             Concepts
           </h1>
           <p className="mt-4 max-w-xl text-base leading-relaxed text-neutral-500 dark:text-neutral-400">
-            Engineering notes on DevOps, system design, and ideas. Browse a
-            category below, or press{" "}
+            My engineering brain dump. Notes, project ideas, lessons learned,
+            interview prep, and things I don&apos;t want to relearn twice.
+          </p>
+          <p className="mt-3 max-w-xl text-sm leading-relaxed text-neutral-400 dark:text-neutral-500">
+            Browse a category below, or press{" "}
             <kbd className="rounded bg-neutral-200 px-1.5 py-0.5 font-mono text-xs text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300">
               ⌘K
             </kbd>{" "}
