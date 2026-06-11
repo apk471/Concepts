@@ -29,11 +29,14 @@ Stateless and stateful describe whether a server retains client data between req
 
 ### Backend Example
 
-```text
-Client -> POST /api/orders (with JWT)
-          Any server instance can handle it.
-          Server validates JWT, processes, returns response.
-          No session stored on the server.
+```mermaid
+sequenceDiagram
+  participant C as Client
+  participant S as Any server instance
+  C->>S: POST /api/orders (with JWT)
+  Note over S: Validates JWT, processes request
+  S-->>C: response
+  Note over S: No session stored on the server
 ```
 
 ### Pros
@@ -67,11 +70,16 @@ Client -> POST /api/orders (with JWT)
 
 ### Backend Example
 
-```text
-Client -> WebSocket connection
-          Server A holds game state in memory.
-          If client reconnects to Server B, state is lost.
-          Solution: sticky session, or external state store.
+```mermaid
+sequenceDiagram
+  participant C as Client
+  participant A as Server A
+  participant B as Server B
+  C->>A: WebSocket connection
+  Note over A: Holds game state in memory
+  C->>B: reconnects
+  Note over B: State is lost
+  Note over C,B: Fix — sticky session or external state store
 ```
 
 ### Pros
@@ -134,18 +142,30 @@ This way app servers remain stateless and scalable, while state is managed by sy
 
 ### JWT Authentication
 
-```text
-Stateless auth flow:
-1. Client logs in -> server returns signed JWT.
-2. Client sends JWT with every request.
-3. Server validates signature, extracts user info.
-4. No session lookup needed.
+**Stateless auth flow:**
 
-Stateful auth flow:
-1. Client logs in -> server creates session, returns session ID.
-2. Client sends session ID with every request.
-3. Server looks up session in DB or cache.
-4. Session store must be available.
+```mermaid
+sequenceDiagram
+  participant C as Client
+  participant S as Server
+  C->>S: log in
+  S-->>C: signed JWT
+  C->>S: every request carries JWT
+  Note over S: Validate signature, extract user info — no session lookup
+```
+
+**Stateful auth flow:**
+
+```mermaid
+sequenceDiagram
+  participant C as Client
+  participant S as Server
+  participant Store as Session store
+  C->>S: log in
+  S-->>C: session ID
+  C->>S: every request carries session ID
+  S->>Store: look up session (DB or cache)
+  Note over Store: Session store must be available
 ```
 
 ### REST APIs
@@ -154,9 +174,15 @@ REST APIs are naturally stateless. Each request contains all the information nee
 
 ### File Upload Services
 
-```text
-Stateless: Client uploads directly to S3, server only validates.
-Stateful: Server receives file, processes, saves locally, then uploads.
+```mermaid
+flowchart LR
+  subgraph Stateless
+    A[Client] -->|uploads directly to| B[(S3)]
+    A -. validated by .-> V[Server]
+  end
+  subgraph Stateful
+    D[Client] --> E[Server] -->|process, save locally| F[(S3)]
+  end
 ```
 
 ---

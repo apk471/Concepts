@@ -10,10 +10,12 @@ Workers are consumer processes that pull messages from a queue and process them.
 
 ## Worker Pattern
 
-```text
-Producer -> Queue -> Worker 1
-                    Worker 2
-                    Worker 3
+```mermaid
+flowchart LR
+  P[Producer] --> Q[Queue]
+  Q --> W1[Worker 1]
+  Q --> W2[Worker 2]
+  Q --> W3[Worker 3]
 ```
 
 1. Producer sends a task (message) to a queue.
@@ -30,11 +32,14 @@ Producer -> Queue -> Worker 1
 
 Workers actively poll the broker for new messages.
 
-```text
-Worker: "Got any new messages?"
-Broker: "Here's batch of 100 messages from partition 0."
-Worker: "Processing..." (commits offsets)
-Worker: "Got any new messages?"
+```mermaid
+sequenceDiagram
+  participant W as Worker
+  participant B as Broker
+  W->>B: Got any new messages?
+  B-->>W: Batch of 100 messages from partition 0
+  Note over W: Processing... (commits offsets)
+  W->>B: Got any new messages?
 ```
 
 Advantages:
@@ -50,10 +55,13 @@ Disadvantages:
 
 Broker pushes messages to workers.
 
-```text
-Broker: "Here's a message. Process it."
-Worker: "Done. ACK."
-Broker: "Here's another message."
+```mermaid
+sequenceDiagram
+  participant B as Broker
+  participant W as Worker
+  B->>W: Here's a message. Process it.
+  W-->>B: Done. ACK.
+  B->>W: Here's another message.
 ```
 
 Advantages:
@@ -95,11 +103,11 @@ What happens when processing fails:
 
 Workers should handle duplicate messages safely. Since most queues guarantee at-least-once delivery, the same message might be processed twice.
 
-```text
-Worker processes order.created:
-  1. Check if order already processed (by ID).
-  2. If yes, skip (idempotent).
-  3. If no, process and mark as done.
+```mermaid
+flowchart TD
+  Start["Worker processes order.created"] --> Check{"Already processed?<br/>(by ID)"}
+  Check -->|Yes| Skip[Skip — idempotent]
+  Check -->|No| Proc[Process and mark as done]
 ```
 
 ---
@@ -114,11 +122,12 @@ Processes one message at a time. Simple but slow.
 
 Multiple threads process messages concurrently from the same queue.
 
-```text
-Worker process
-  Thread 1: processing message A
-  Thread 2: processing message B
-  Thread 3: processing message C
+```mermaid
+flowchart TD
+  W[Worker process]
+  W --> T1[Thread 1: processing message A]
+  W --> T2[Thread 2: processing message B]
+  W --> T3[Thread 3: processing message C]
 ```
 
 Pros: Higher throughput per worker.
@@ -128,10 +137,12 @@ Cons: Race conditions, shared state, ordering lost.
 
 Multiple OS processes (or containers) work on the queue.
 
-```text
-Container 1: Worker A
-Container 2: Worker B
-Container 3: Worker C
+```mermaid
+flowchart TD
+  Q[Queue]
+  Q --> C1[Container 1: Worker A]
+  Q --> C2[Container 2: Worker B]
+  Q --> C3[Container 3: Worker C]
 ```
 
 Pros: No shared state, easy scaling.
@@ -150,8 +161,9 @@ Cons: More resource overhead.
 
 Add more worker instances to handle more load.
 
-```text
-Queue backlog growing -> Add 5 more workers -> Backlog drains
+```mermaid
+flowchart LR
+  A[Queue backlog growing] --> B[Add 5 more workers] --> C[Backlog drains]
 ```
 
 - Autoscaling based on queue depth.
@@ -168,9 +180,10 @@ Give each worker more CPU/RAM.
 
 Add more partitions to increase parallelism.
 
-```text
-Topic with 3 partitions -> max 3 consumers in a group.
-Increase to 6 partitions -> max 6 consumers.
+```mermaid
+flowchart LR
+  A[Topic with 3 partitions] --> B[Max 3 consumers in a group]
+  C[Increase to 6 partitions] --> D[Max 6 consumers]
 ```
 
 ---
@@ -179,53 +192,51 @@ Increase to 6 partitions -> max 6 consumers.
 
 ### Image Processing
 
-```text
-User uploads image -> API Server -> Queue -> Worker
-
-Worker:
-  1. Download original image.
-  2. Generate thumbnails (100x100, 500x500, 1000x1000).
-  3. Upload thumbnails to CDN.
-  4. Update DB with CDN URLs.
-  5. ACK message.
+```mermaid
+flowchart TD
+  U[User uploads image] --> API[API Server] --> Q[Queue] --> W[Worker]
+  W --> S1[1. Download original image]
+  S1 --> S2["2. Generate thumbnails (100x100, 500x500, 1000x1000)"]
+  S2 --> S3[3. Upload thumbnails to CDN]
+  S3 --> S4[4. Update DB with CDN URLs]
+  S4 --> S5[5. ACK message]
 ```
 
 ### Email Sending
 
-```text
-Order placed -> Order Service -> Queue -> Email Workers
-
-Worker:
-  1. Read order details.
-  2. Render email template (HTML).
-  3. Send via SMTP/API.
-  4. Update delivery status in DB.
-  5. ACK or DLQ on failure.
+```mermaid
+flowchart TD
+  O[Order placed] --> OS[Order Service] --> Q[Queue] --> W[Email Worker]
+  W --> S1[1. Read order details]
+  S1 --> S2[2. Render email template HTML]
+  S2 --> S3[3. Send via SMTP/API]
+  S3 --> S4[4. Update delivery status in DB]
+  S4 --> S5[5. ACK or DLQ on failure]
 ```
 
 ### Video Transcoding
 
-```text
-Video uploaded -> API -> Queue -> Transcoding Worker
-
-Worker:
-  1. Download source video.
-  2. Transcode to multiple formats/resolutions.
-  3. Generate thumbnails and previews.
-  4. Upload to CDN.
-  5. Notify completion (via callback or status topic).
+```mermaid
+flowchart TD
+  V[Video uploaded] --> API[API] --> Q[Queue] --> W[Transcoding Worker]
+  W --> S1[1. Download source video]
+  S1 --> S2[2. Transcode to multiple formats/resolutions]
+  S2 --> S3[3. Generate thumbnails and previews]
+  S3 --> S4[4. Upload to CDN]
+  S4 --> S5[5. Notify completion via callback or status topic]
 ```
 
 ### Scheduled Tasks
 
-```text
-Cron trigger -> Queue -> Workers
-
-Worker:
-  1. Read batch of records needing processing.
-  2. Process each record.
-  3. Mark as done.
-  4. If time remains, get next batch.
+```mermaid
+flowchart TD
+  Cron[Cron trigger] --> Q[Queue] --> W[Worker]
+  W --> S1[1. Read batch of records needing processing]
+  S1 --> S2[2. Process each record]
+  S2 --> S3[3. Mark as done]
+  S3 --> S4{Time remains?}
+  S4 -->|Yes| S1
+  S4 -->|No| Done[Stop]
 ```
 
 ---
@@ -234,19 +245,21 @@ Worker:
 
 ### Crash During Processing
 
-```text
-Worker picks up message, starts processing, crashes.
-Message was not ACKed.
-Broker redelivers to another worker (or same worker after restart).
+```mermaid
+flowchart TD
+  A[Worker picks up message] --> B[Starts processing] --> C[Crashes]
+  C --> D[Message was not ACKed]
+  D --> E["Broker redelivers to another worker<br/>(or same worker after restart)"]
 ```
 
 ### Poison Pill Message
 
 A message that always fails to process (bad format, missing data).
 
-```text
-Worker 1: tries, fails, retries, fails again -> DLQ
-Worker 2: (would get the same result)
+```mermaid
+flowchart LR
+  W1[Worker 1] --> T[tries, fails, retries, fails again] --> DLQ[(DLQ)]
+  W2[Worker 2] -. would get the same result .-> T
 ```
 
 Solution: Track retry count, move to DLQ after limit.

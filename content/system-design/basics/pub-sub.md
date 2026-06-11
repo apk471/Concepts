@@ -12,11 +12,12 @@ The key idea: **publishers and subscribers are decoupled**. They don't know abou
 
 ## How It Works
 
-```text
-Publisher -> Topic
-             -> Subscriber A
-             -> Subscriber B
-             -> Subscriber C
+```mermaid
+flowchart LR
+  Pub[Publisher] --> T[Topic]
+  T --> A[Subscriber A]
+  T --> B[Subscriber B]
+  T --> C[Subscriber C]
 ```
 
 1. Publishers send messages to a topic.
@@ -80,20 +81,22 @@ Message queues and pub/sub are related but not the same:
 
 ### Backend Examples
 
-```text
-User signs up:
-  -> User Service publishes "user.created" to Topic
-  -> Email Service subscribes: sends welcome email
-  -> Analytics Service subscribes: records signup event
-  -> CRM Service subscribes: creates contact record
-  -> Notification Service subscribes: sends push notification
+```mermaid
+flowchart LR
+  US[User Service] -->|"user.created"| T[Topic]
+  T --> Email[Email Service<br/>welcome email]
+  T --> An[Analytics Service<br/>record signup]
+  T --> CRM[CRM Service<br/>create contact]
+  T --> Notif[Notification Service<br/>push notification]
+```
 
-Order placed:
-  -> Order Service publishes "order.placed"
-  -> Inventory Service: reserves items
-  -> Payment Service: processes payment
-  -> Shipping Service: creates shipment
-  -> Notification Service: sends order confirmation
+```mermaid
+flowchart LR
+  OS[Order Service] -->|"order.placed"| T[Topic]
+  T --> Inv[Inventory Service<br/>reserve items]
+  T --> Pay[Payment Service<br/>process payment]
+  T --> Ship[Shipping Service<br/>create shipment]
+  T --> Notif[Notification Service<br/>order confirmation]
 ```
 
 ---
@@ -102,12 +105,10 @@ Order placed:
 
 In Kafka, pub/sub is implemented through consumer groups:
 
-```text
-Topic: orders
-  -> Consumer Group A (inventory service)
-       consumer-1, consumer-2  (split partitions)
-  -> Consumer Group B (analytics service)
-       consumer-1               (all partitions)
+```mermaid
+flowchart LR
+  T["Topic: orders"] --> GA["Consumer Group A<br/>(inventory service)<br/>consumer-1, consumer-2 — split partitions"]
+  T --> GB["Consumer Group B<br/>(analytics service)<br/>consumer-1 — all partitions"]
 ```
 
 - Each consumer group is an independent subscriber.
@@ -120,11 +121,12 @@ Topic: orders
 
 In RabbitMQ, pub/sub uses a **fanout exchange**:
 
-```text
-Publisher -> Fanout Exchange
-             -> Queue A -> Consumer Group A
-             -> Queue B -> Consumer Group B
-             -> Queue C -> Consumer Group C
+```mermaid
+flowchart LR
+  Pub[Publisher] --> FE[Fanout Exchange]
+  FE --> QA[Queue A] --> GA[Consumer Group A]
+  FE --> QB[Queue B] --> GB[Consumer Group B]
+  FE --> QC[Queue C] --> GC[Consumer Group C]
 ```
 
 - All queues bound to the fanout exchange get every message.
@@ -166,30 +168,33 @@ Subscribers come and go. The system should handle:
 
 ### Notification System
 
-```text
-User Service -> "user.updated" Topic
-                -> SMS Service
-                -> Email Service
-                -> Push Notification Service
+```mermaid
+flowchart LR
+  US[User Service] -->|"user.updated"| T[Topic]
+  T --> SMS[SMS Service]
+  T --> Email[Email Service]
+  T --> Push[Push Notification Service]
 ```
 
 ### Change Data Capture (CDC)
 
-```text
-Database -> Debezium (CDC)
-           -> "db.changes" Topic
-              -> Search Index Service
-              -> Cache Invalidation Service
-              -> Analytics Pipeline
+```mermaid
+flowchart LR
+  DB[(Database)] --> CDC["Debezium (CDC)"]
+  CDC -->|"db.changes"| T[Topic]
+  T --> SI[Search Index Service]
+  T --> CI[Cache Invalidation Service]
+  T --> AP[Analytics Pipeline]
 ```
 
 ### Real-Time Analytics
 
-```text
-Web servers -> "page.views" Topic
-               -> Real-time Dashboard
-               -> Batch Analytics (hourly)
-               -> Anomaly Detection
+```mermaid
+flowchart LR
+  WS[Web servers] -->|"page.views"| T[Topic]
+  T --> Dash[Real-time Dashboard]
+  T --> Batch["Batch Analytics (hourly)"]
+  T --> AD[Anomaly Detection]
 ```
 
 ---

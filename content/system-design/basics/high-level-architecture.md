@@ -54,12 +54,11 @@ Key points:
 
 A CDN is a network of servers distributed globally that caches and serves static content (images, CSS, JS, videos) from locations close to users.
 
-```text
-User in India requests image
-  -> CDN edge server in Mumbai has it cached
-  -> Served from Mumbai (fast, < 10ms)
-  vs.
-  -> Origin server in US (slow, > 200ms)
+```mermaid
+flowchart LR
+  U["User in India<br/>requests image"] --> CDN["CDN edge in Mumbai<br/>(cached)"]
+  CDN --> Fast["Served from Mumbai<br/>fast, under 10ms"]
+  U -. cache miss .-> Origin["Origin server in US<br/>slow, over 200ms"]
 ```
 
 Key points:
@@ -74,10 +73,12 @@ Key points:
 
 A load balancer distributes incoming traffic across multiple backend servers.
 
-```text
-User -> LB (round-robin) -> Server A
-                          -> Server B
-                          -> Server C
+```mermaid
+flowchart LR
+  User --> LB["LB (round-robin)"]
+  LB --> A["Server A"]
+  LB --> B["Server B"]
+  LB --> C["Server C"]
 ```
 
 Types:
@@ -99,13 +100,14 @@ Key points:
 
 The compute layer that runs business logic.
 
-```text
-Request -> App Server
-           1. Parse request
-           2. Validate input
-           3. Business logic
-           4. Read/write data
-           5. Return response
+```mermaid
+flowchart TD
+  Req[Request] --> AS[App Server]
+  AS --> S1["1. Parse request"]
+  S1 --> S2["2. Validate input"]
+  S2 --> S3["3. Business logic"]
+  S3 --> S4["4. Read/write data"]
+  S4 --> S5["5. Return response"]
 ```
 
 Key points:
@@ -153,10 +155,11 @@ Key points:
 
 Temporary, fast storage for frequently accessed data.
 
-```
-Request -> Check Cache
-           - Cache hit -> Return immediately
-           - Cache miss -> Query DB -> Store in Cache -> Return
+```mermaid
+flowchart TD
+  Req[Request] --> Check{Check Cache}
+  Check -->|Cache hit| Hit[Return immediately]
+  Check -->|Cache miss| DB[Query DB] --> Store[Store in Cache] --> Ret[Return]
 ```
 
 Common patterns:
@@ -176,8 +179,9 @@ Key points:
 
 Asynchronous buffer between services.
 
-```text
-Request -> App Server -> Queue -> Workers (async)
+```mermaid
+flowchart LR
+  Req[Request] --> AS[App Server] --> Q[Queue] --> W["Workers (async)"]
 ```
 
 Key points:
@@ -193,9 +197,9 @@ Key points:
 
 ### Monolith
 
-```text
-All in one service:
-  [Web + API + Business Logic + DB Access]
+```mermaid
+flowchart TD
+  M["Monolith — one service<br/>Web + API + Business Logic + DB Access"]
 ```
 
 - Simple to start.
@@ -204,11 +208,12 @@ All in one service:
 
 ### Microservices
 
-```text
-Separate services:
-  [User Service] [Order Service] [Payment Service] [Inventory Service]
-       |                |               |                  |
-  [User DB]       [Order DB]      [Payment DB]      [Inventory DB]
+```mermaid
+flowchart TD
+  US[User Service] --> USD[(User DB)]
+  OS[Order Service] --> OSD[(Order DB)]
+  PS[Payment Service] --> PSD[(Payment DB)]
+  IS[Inventory Service] --> ISD[(Inventory DB)]
 ```
 
 - Each service is independently deployable.
@@ -217,9 +222,9 @@ Separate services:
 
 ### Layered (N-Tier)
 
-```text
-[Presentation Tier] -> [Application Tier] -> [Data Tier]
-     (CDN)               (App Servers)        (DB, Cache)
+```mermaid
+flowchart LR
+  P["Presentation Tier<br/>(CDN)"] --> A["Application Tier<br/>(App Servers)"] --> D["Data Tier<br/>(DB, Cache)"]
 ```
 
 - Each layer has a specific responsibility.
@@ -232,9 +237,11 @@ Separate services:
 
 ### Simple Architecture
 
-```text
-User -> DNS -> LB -> App Server -> DB
-                          -> Cache
+```mermaid
+flowchart LR
+  User --> DNS --> LB --> App[App Server]
+  App --> DB
+  App --> Cache
 ```
 
 - Single region.
@@ -244,16 +251,23 @@ User -> DNS -> LB -> App Server -> DB
 
 ### Scaled Architecture
 
-```text
-User -> DNS (geo)
-        -> Region US:
-             -> CDN (static)
-             -> LB -> App Servers -> Cache Cluster -> DB Primary
-                    -> Queue -> Workers
-        -> Region EU:
-             -> CDN (static)
-             -> LB -> App Servers -> Cache Cluster -> DB Replica
-                    -> Queue -> Workers
+```mermaid
+flowchart TD
+  User --> DNS["DNS (geo)"]
+  DNS --> USLB
+  DNS --> EULB
+  subgraph US["Region US"]
+    USCDN["CDN (static)"]
+    USLB["LB"] --> USApp["App Servers"]
+    USApp --> USCache["Cache Cluster"] --> USDB[("DB Primary")]
+    USApp --> USQ["Queue"] --> USW["Workers"]
+  end
+  subgraph EU["Region EU"]
+    EUCDN["CDN (static)"]
+    EULB["LB"] --> EUApp["App Servers"]
+    EUApp --> EUCache["Cache Cluster"] --> EUDB[("DB Replica")]
+    EUApp --> EUQ["Queue"] --> EUW["Workers"]
+  end
 ```
 
 - Multiple regions for lower latency and disaster recovery.
