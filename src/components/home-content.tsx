@@ -28,11 +28,11 @@ export function HomeContent({
             Concepts
           </h1>
           <p className="mt-2 text-sm font-medium uppercase tracking-widest text-neutral-400 dark:text-neutral-500">
-            by Ayush
+            Ayush&apos;s personal notebook
           </p>
           <p className="mt-4 max-w-xl text-base leading-relaxed text-neutral-500 dark:text-neutral-400">
-            My engineering brain dump. Notes, project ideas, lessons learned,
-            interview prep, and things I don&apos;t want to relearn twice.
+            My engineering brain dump — notes I keep for myself. You&apos;re
+            welcome to look around, but it&apos;s written for an audience of one.
           </p>
           <p className="mt-3 max-w-xl text-sm leading-relaxed text-neutral-400 dark:text-neutral-500">
             Browse a category below, or press{" "}
