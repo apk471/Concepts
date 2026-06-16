@@ -47,12 +47,23 @@ class SpeechController {
   private title = "";
   private status: TTSStatus = "idle";
   private rate = 1;
-  private listeners = new Set<(s: TTSState) => void>();
+  private listeners = new Set<() => void>();
   private keepalive: ReturnType<typeof setInterval> | null = null;
+  // Cached snapshot — useSyncExternalStore requires getState() to return a
+  // STABLE reference between renders, only changing when the data changes.
+  // Returning a fresh object each call causes an infinite re-render loop.
+  private snapshot: TTSState = {
+    status: "idle",
+    rate: 1,
+    title: "",
+    index: 0,
+    total: 0,
+  };
 
   constructor() {
     if (typeof window !== "undefined") {
       this.rate = loadRate();
+      this.snapshot = { ...this.snapshot, rate: this.rate };
       // Voices load asynchronously in some browsers; touch them early.
       window.speechSynthesis?.getVoices();
     }
@@ -63,24 +74,24 @@ class SpeechController {
   }
 
   getState(): TTSState {
-    return {
+    return this.snapshot;
+  }
+
+  subscribe(fn: () => void): () => void {
+    this.listeners.add(fn);
+    return () => this.listeners.delete(fn);
+  }
+
+  private emit() {
+    // Rebuild the cached snapshot, then notify subscribers.
+    this.snapshot = {
       status: this.status,
       rate: this.rate,
       title: this.title,
       index: this.index,
       total: this.chunks.length,
     };
-  }
-
-  subscribe(fn: (s: TTSState) => void): () => void {
-    this.listeners.add(fn);
-    fn(this.getState());
-    return () => this.listeners.delete(fn);
-  }
-
-  private emit() {
-    const s = this.getState();
-    this.listeners.forEach((fn) => fn(s));
+    this.listeners.forEach((fn) => fn());
   }
 
   isSupported(): boolean {
