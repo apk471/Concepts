@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { CommandMenu } from "@/components/command-menu";
+import { TTSPlayer } from "@/components/tts/tts-player";
+import { SelectionReader } from "@/components/tts/selection-reader";
 import { getSearchIndex } from "@/lib/notes";
 import "./globals.css";
 
@@ -79,6 +81,8 @@ export default function RootLayout({
       </head>
       <body className="font-sans">
         {children}
+        <TTSPlayer />
+        <SelectionReader />
         <CommandMenu entries={getSearchIndex()} />
       </body>
     </html>
