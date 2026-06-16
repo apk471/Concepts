@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { Header } from "@/components/header";
 import { Markdown } from "@/components/markdown";
+import { ListenButton } from "@/components/tts/listen-button";
 import { getAllNotes, getNoteBySlug } from "@/lib/notes";
 
 export function generateStaticParams() {
@@ -60,9 +61,12 @@ export default async function NotePage({
 
         {/* Title */}
         <header className="mb-10 border-b border-neutral-200 pb-8 dark:border-neutral-800">
-          <span className="inline-block rounded-full bg-neutral-100 px-3 py-1 text-xs font-medium tracking-wide text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
-            {note.group ?? note.categoryLabel}
-          </span>
+          <div className="flex items-center justify-between gap-4">
+            <span className="inline-block rounded-full bg-neutral-100 px-3 py-1 text-xs font-medium tracking-wide text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
+              {note.group ?? note.categoryLabel}
+            </span>
+            <ListenButton title={note.title} text={note.plain} />
+          </div>
           <h1 className="mt-4 text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl dark:text-neutral-50">
             {note.title}
           </h1>
