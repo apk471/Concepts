@@ -209,6 +209,20 @@ export function CardIllustration({ name }: Props) {
           <path d="M100 8v6M70 22l4 4M130 22l-4 4M58 45h6M136 45h6" />
         </svg>
       );
+    case "loop":
+      // circular feedback loop: read → plan → implement → test → back
+      return (
+        <svg {...common}>
+          <path d="M64 32a30 30 0 0 1 54-6" />
+          <path d="M118 18v12h-12" />
+          <path d="M136 58a30 30 0 0 1-54 6" />
+          <path d="M82 78V66h12" />
+          <circle cx="64" cy="32" r="3" />
+          <circle cx="118" cy="26" r="3" />
+          <circle cx="136" cy="58" r="3" />
+          <circle cx="82" cy="64" r="3" />
+        </svg>
+      );
     default:
       // document
       return (

@@ -18,19 +18,24 @@ const CONTENT_DIR = path.join(process.cwd(), "content");
 
 // Order + display labels for top-level categories.
 const CATEGORY_META: Record<string, { label: string; order: number; blurb: string }> = {
+  ai: {
+    label: "AI",
+    order: 1,
+    blurb: "Agent loops, Claude Code skills, worktrees, and MCP servers.",
+  },
   "system-design": {
     label: "System Design",
-    order: 1,
+    order: 2,
     blurb: "Fundamentals, capacity planning, and an interview framework.",
   },
   devops: {
     label: "DevOps",
-    order: 2,
+    order: 3,
     blurb: "CI/CD, Docker, and GitHub Actions for backend services.",
   },
   ideas: {
     label: "Ideas",
-    order: 3,
+    order: 4,
     blurb: "Project plans, experiments, and things worth building.",
   },
 };
