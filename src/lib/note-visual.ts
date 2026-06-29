@@ -4,6 +4,7 @@ export function resolveIcon(slug: string, title: string, category: string): stri
   const t = `${slug} ${title}`.toLowerCase();
 
   const rules: [RegExp, string][] = [
+    [/web[- ]?crawl|crawler|spider|url[- ]?frontier/, "crawler"],
     [/capacity|qps|throughput|estimat/, "capacity"],
     [/message[- ]?queue|kafka|rabbit|\bqueue/, "queue"],
     [/pub[- ]?sub|publish|subscrib|broadcast/, "pubsub"],

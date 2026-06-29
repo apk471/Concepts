@@ -209,6 +209,20 @@ export function CardIllustration({ name }: Props) {
           <path d="M100 8v6M70 22l4 4M130 22l-4 4M58 45h6M136 45h6" />
         </svg>
       );
+    case "crawler":
+      // spider-web crawl: central node + radiating links to page nodes
+      return (
+        <svg {...common}>
+          <circle cx="100" cy="45" r="10" />
+          <circle cx="50" cy="20" r="6" />
+          <circle cx="160" cy="20" r="6" />
+          <circle cx="40" cy="60" r="6" />
+          <circle cx="170" cy="60" r="6" />
+          <circle cx="100" cy="78" r="6" />
+          <path d="M91 41 56 22M109 41 154 22M93 51 46 60M107 51 164 60M100 55v17" />
+          <path d="M50 26v28M160 26v28" />
+        </svg>
+      );
     default:
       // document
       return (

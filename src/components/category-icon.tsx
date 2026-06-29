@@ -169,6 +169,14 @@ export function CategoryIcon({ name, className }: IconProps) {
           <path d="M12 3a6 6 0 0 0-3.6 10.8c.6.5.9 1.1.9 1.7v.5h5.4v-.5c0-.6.3-1.2.9-1.7A6 6 0 0 0 12 3Z" />
         </svg>
       );
+    case "crawler":
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="12" r="3.2" />
+          <path d="M12 8.8V5M12 15.2V19M8.8 12H5M15.2 12H19" />
+          <path d="M9.5 9.5 7 7M14.5 9.5 17 7M9.5 14.5 7 17M14.5 14.5 17 17" />
+        </svg>
+      );
     default:
       return (
         <svg {...common}>
