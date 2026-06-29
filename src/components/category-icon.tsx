@@ -178,6 +178,14 @@ export function CategoryIcon({ name, className }: IconProps) {
           <path d="M7 20v-3h3" />
         </svg>
       );
+    case "crawler":
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="12" r="3.2" />
+          <path d="M12 8.8V5M12 15.2V19M8.8 12H5M15.2 12H19" />
+          <path d="M9.5 9.5 7 7M14.5 9.5 17 7M9.5 14.5 7 17M14.5 14.5 17 17" />
+        </svg>
+      );
     default:
       return (
         <svg {...common}>
