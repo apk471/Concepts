@@ -19,7 +19,8 @@ export function resolveIcon(slug: string, title: string, category: string): stri
     [/home[- ]?server|self[- ]?host|\bserver\b|rack/, "server"],
     [/notes?[- ]?site|\bweb\b|website|frontend/, "web"],
     [/1001x|rocket|growth|scal(e|ing)/, "rocket"],
-    [/slack|chat|message\b|notif/, "chat"],
+    [/notification[- ]?service|push[- ]?notif|fcm|apns|notif/, "notification"],
+    [/slack|chat|message\b/, "chat"],
     [/setup|config|install|tooling|\btools?\b/, "tools"],
     [/\bneed\b|todo|checklist|\blist\b|requirement/, "list"],
   ];

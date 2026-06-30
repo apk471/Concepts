@@ -237,6 +237,16 @@ export function CardIllustration({ name }: Props) {
           <path d="M50 26v28M160 26v28" />
         </svg>
       );
+    case "notification":
+      // bell + radiating waves + small badge dot
+      return (
+        <svg {...common}>
+          <path d="M86 60V42a14 14 0 0 1 28 0v18l4 6H82z" />
+          <path d="M94 70a6 6 0 0 0 12 0" />
+          <path d="M70 30c2-4 5-7 9-9M70 60c2 4 5 7 9 9M130 30c-2-4-5-7-9-9M130 60c-2 4-5 7-9 9" />
+          <circle cx="124" cy="30" r="6" fill="currentColor" stroke="none" />
+        </svg>
+      );
     default:
       // document
       return (

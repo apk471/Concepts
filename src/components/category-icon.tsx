@@ -186,6 +186,14 @@ export function CategoryIcon({ name, className }: IconProps) {
           <path d="M9.5 9.5 7 7M14.5 9.5 17 7M9.5 14.5 7 17M14.5 14.5 17 17" />
         </svg>
       );
+    case "notification":
+      return (
+        <svg {...common}>
+          <path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2H4.5z" />
+          <path d="M10 19a2 2 0 0 0 4 0" />
+          <circle cx="18" cy="6" r="2.2" fill="currentColor" stroke="none" />
+        </svg>
+      );
     default:
       return (
         <svg {...common}>
